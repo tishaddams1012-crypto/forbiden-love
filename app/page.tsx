@@ -19,7 +19,6 @@ type Character = {
 };
 
 const spriteImage = "/elenco.png";
-
 const characters: Character[] = [
   {
     id: "paola",
