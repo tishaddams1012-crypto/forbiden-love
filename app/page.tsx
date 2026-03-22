@@ -4,6 +4,7 @@ import { chapterData } from "./data/chapters";
 import { useState } from "react";
 
 type ChapterKey = keyof typeof chapterData;
+type ViewMode = "home" | "episodes" | "characters" | "faces";
 
 const characterCards = [
   {
@@ -51,7 +52,7 @@ const characterCards = [
 export default function Home() {
   const [selectedChapter, setSelectedChapter] =
     useState<ChapterKey>("chapter1");
-  const [showCharacters, setShowCharacters] = useState(false);
+  const [view, setView] = useState<ViewMode>("home");
   const [openMenu, setOpenMenu] = useState(false);
 
   const currentChapter = chapterData[selectedChapter] ?? chapterData.chapter1;
@@ -72,7 +73,17 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
-                setShowCharacters((prev) => !prev);
+                setView("home");
+                setOpenMenu(false);
+              }}
+              className="rounded-full border border-zinc-700 bg-zinc-900/70 px-5 py-2 text-sm transition hover:border-red-700 hover:bg-zinc-800"
+            >
+              Início
+            </button>
+
+            <button
+              onClick={() => {
+                setView("characters");
                 setOpenMenu(false);
               }}
               className="rounded-full border border-zinc-700 bg-zinc-900/70 px-5 py-2 text-sm transition hover:border-red-700 hover:bg-zinc-800"
@@ -80,102 +91,238 @@ export default function Home() {
               Personagens
             </button>
 
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setOpenMenu((prev) => !prev);
-                  setShowCharacters(false);
-                }}
-                className="rounded-full border border-zinc-700 bg-zinc-900/70 px-5 py-2 text-sm transition hover:border-red-700 hover:bg-zinc-800"
-              >
-                Episódios
-              </button>
+            <button
+              onClick={() => {
+                setView("episodes");
+                setOpenMenu((prev) => !prev);
+              }}
+              className="rounded-full border border-zinc-700 bg-zinc-900/70 px-5 py-2 text-sm transition hover:border-red-700 hover:bg-zinc-800"
+            >
+              Episódios
+            </button>
 
-              {openMenu && (
-                <div className="absolute right-0 mt-3 max-h-96 w-72 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl">
-                  {(Object.keys(chapterData) as ChapterKey[]).map((key) => (
-                    <button
-                      key={key}
-                      onClick={() => {
-                        setSelectedChapter(key);
-                        setOpenMenu(false);
-                        setShowCharacters(false);
-                      }}
-                      className="block w-full border-b border-zinc-800 px-4 py-3 text-left text-sm transition last:border-b-0 hover:bg-zinc-900"
-                    >
-                      {chapterData[key].label} — {chapterData[key].title}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => {
+                setView("faces");
+                setOpenMenu(false);
+              }}
+              className="rounded-full border border-zinc-700 bg-zinc-900/70 px-5 py-2 text-sm transition hover:border-red-700 hover:bg-zinc-800"
+            >
+              Rostos
+            </button>
+
+            {view === "episodes" && openMenu && (
+              <div className="absolute right-6 top-20 z-50 max-h-96 w-72 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl">
+                {(Object.keys(chapterData) as ChapterKey[]).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      setSelectedChapter(key);
+                      setOpenMenu(false);
+                      setView("episodes");
+                    }}
+                    className="block w-full border-b border-zinc-800 px-4 py-3 text-left text-sm transition last:border-b-0 hover:bg-zinc-900"
+                  >
+                    {chapterData[key].label} — {chapterData[key].title}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </header>
 
       <main className="px-6 py-10">
-        {showCharacters ? (
-  <section className="mx-auto max-w-6xl animate-fadeIn">
-    <div className="rounded-[2rem] border border-zinc-800 bg-[radial-gradient(circle_at_top,rgba(120,0,0,0.18),transparent_45%),rgba(10,10,10,0.95)] p-8 shadow-2xl shadow-black/50 md:p-10">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-sm uppercase tracking-[0.35em] text-red-500">
-            arquivo emocional
-          </p>
+        {view === "home" ? (
+          <section className="mx-auto max-w-6xl animate-fadeIn">
+            <div className="rounded-[2rem] border border-red-950/70 bg-[radial-gradient(circle_at_top,rgba(120,0,0,0.24),transparent_40%),rgba(10,10,10,0.96)] px-8 py-16 shadow-2xl shadow-black/40 md:px-12 md:py-20">
+              <div className="mx-auto max-w-4xl text-center">
+                <p className="text-sm uppercase tracking-[0.35em] text-red-500">
+                  fanfic series
+                </p>
 
-          <h2 className="mt-2 text-5xl font-bold tracking-wide">
-            Personagens
-          </h2>
+                <h1 className="mt-5 text-5xl font-bold tracking-wide md:text-7xl">
+                  Forbidden Love
+                </h1>
 
-          <p className="mt-4 max-w-2xl leading-7 text-zinc-400">
-            Cada pessoa aqui carrega um pedaço do incêndio. Algumas são abrigo. Outras, perigo.
-          </p>
-        </div>
+                <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-zinc-300 md:text-lg">
+                  Entre desejo, risco e silêncio, algumas histórias nascem para
+                  incendiar tudo.
+                </p>
+              </div>
 
-        <button
-          onClick={() => setShowCharacters(false)}
-          className="rounded-2xl border border-zinc-700 bg-zinc-900/70 px-5 py-3 text-sm transition hover:border-red-700 hover:bg-zinc-800"
-        >
-          Voltar
-        </button>
-      </div>
+              <div className="mt-14 grid gap-6 md:grid-cols-3">
+                <button
+                  onClick={() => {
+                    setView("episodes");
+                    setOpenMenu(true);
+                  }}
+                  className="group rounded-[1.8rem] border border-zinc-800 bg-black/40 p-7 text-left transition duration-300 hover:-translate-y-2 hover:border-red-800/70 hover:bg-zinc-900/80"
+                >
+                  <p className="text-xs uppercase tracking-[0.28em] text-red-500">
+                    entrar
+                  </p>
+                  <h3 className="mt-3 text-3xl font-semibold text-zinc-100">
+                    Episódios
+                  </h3>
+                  <p className="mt-4 leading-7 text-zinc-400">
+                    Acesse os capítulos da história e acompanhe cada fase de
+                    Paola e Andressa.
+                  </p>
+                </button>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {characterCards.map((item) => {
-          const isMain =
-            item.name === "Paola" || item.name === "Andressa";
+                <button
+                  onClick={() => {
+                    setView("characters");
+                    setOpenMenu(false);
+                  }}
+                  className="group rounded-[1.8rem] border border-zinc-800 bg-black/40 p-7 text-left transition duration-300 hover:-translate-y-2 hover:border-red-800/70 hover:bg-zinc-900/80"
+                >
+                  <p className="text-xs uppercase tracking-[0.28em] text-red-500">
+                    explorar
+                  </p>
+                  <h3 className="mt-3 text-3xl font-semibold text-zinc-100">
+                    Personagens
+                  </h3>
+                  <p className="mt-4 leading-7 text-zinc-400">
+                    Veja quem são as peças centrais da história, seus vínculos,
+                    tensões e riscos.
+                  </p>
+                </button>
 
-          return (
-            <div
-              key={item.name}
-              className={
-                isMain
-                  ? "group relative overflow-hidden rounded-[1.8rem] border border-red-700/70 bg-red-950/30 p-6 shadow-lg shadow-red-900/20 transition duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:border-red-700 hover:bg-red-950/40"
-                  : "group relative overflow-hidden rounded-[1.8rem] border border-zinc-800 bg-black/40 p-6 transition duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:border-red-900/60 hover:bg-zinc-900/80"
-              }
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-red-800/30 via-transparent to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
-
-              <p className="relative z-10 text-xs uppercase tracking-[0.28em] text-red-500">
-                {item.role}
-              </p>
-
-              <h3 className="relative z-10 mt-3 text-3xl font-semibold tracking-wide text-zinc-100">
-                {item.name}
-              </h3>
-
-              <div className="relative z-10 mt-4 h-px w-full bg-gradient-to-r from-red-900/70 to-transparent" />
-
-              <p className="relative z-10 mt-5 leading-7 text-zinc-300">
-                {item.desc}
-              </p>
+                <button
+                  onClick={() => {
+                    setView("faces");
+                    setOpenMenu(false);
+                  }}
+                  className="group rounded-[1.8rem] border border-zinc-800 bg-black/40 p-7 text-left transition duration-300 hover:-translate-y-2 hover:border-red-800/70 hover:bg-zinc-900/80"
+                >
+                  <p className="text-xs uppercase tracking-[0.28em] text-red-500">
+                    visualizar
+                  </p>
+                  <h3 className="mt-3 text-3xl font-semibold text-zinc-100">
+                    Rostos
+                  </h3>
+                  <p className="mt-4 leading-7 text-zinc-400">
+                    Entre na galeria visual dos personagens e explore a estética
+                    de cada presença.
+                  </p>
+                </button>
+              </div>
             </div>
-          );
-        })}
-      </div>
-    </div>
-  </section>
-) : (
+          </section>
+        ) : view === "characters" ? (
+          <section className="mx-auto max-w-6xl animate-fadeIn">
+            <div className="rounded-[2rem] border border-zinc-800 bg-[radial-gradient(circle_at_top,rgba(120,0,0,0.18),transparent_45%),rgba(10,10,10,0.95)] p-8 shadow-2xl shadow-black/50 md:p-10">
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.35em] text-red-500">
+                    arquivo emocional
+                  </p>
+
+                  <h2 className="mt-2 text-5xl font-bold tracking-wide">
+                    Personagens
+                  </h2>
+
+                  <p className="mt-4 max-w-2xl leading-7 text-zinc-400">
+                    Cada pessoa aqui carrega um pedaço do incêndio. Algumas são
+                    abrigo. Outras, perigo.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setView("home")}
+                  className="rounded-2xl border border-zinc-700 bg-zinc-900/70 px-5 py-3 text-sm transition hover:border-red-700 hover:bg-zinc-800"
+                >
+                  Voltar
+                </button>
+              </div>
+
+              <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {characterCards.map((item) => {
+                  const isMain =
+                    item.name === "Paola" || item.name === "Andressa";
+
+                  return (
+                    <div
+                      key={item.name}
+                      className={
+                        isMain
+                          ? "group relative overflow-hidden rounded-[1.8rem] border border-red-700/70 bg-red-950/30 p-6 shadow-lg shadow-red-900/20 transition duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:border-red-700 hover:bg-red-950/40"
+                          : "group relative overflow-hidden rounded-[1.8rem] border border-zinc-800 bg-black/40 p-6 transition duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:border-red-900/60 hover:bg-zinc-900/80"
+                      }
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-red-800/30 via-transparent to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
+
+                      <p className="relative z-10 text-xs uppercase tracking-[0.28em] text-red-500">
+                        {item.role}
+                      </p>
+
+                      <h3 className="relative z-10 mt-3 text-3xl font-semibold tracking-wide text-zinc-100">
+                        {item.name}
+                      </h3>
+
+                      <div className="relative z-10 mt-4 h-px w-full bg-gradient-to-r from-red-900/70 to-transparent" />
+
+                      <p className="relative z-10 mt-5 leading-7 text-zinc-300">
+                        {item.desc}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        ) : view === "faces" ? (
+          <section className="mx-auto max-w-6xl animate-fadeIn">
+            <div className="rounded-[2rem] border border-zinc-800 bg-[radial-gradient(circle_at_top,rgba(120,0,0,0.18),transparent_45%),rgba(10,10,10,0.95)] p-8 shadow-2xl shadow-black/50 md:p-10">
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.35em] text-red-500">
+                    galeria visual
+                  </p>
+                  <h2 className="mt-2 text-5xl font-bold tracking-wide">
+                    Rostos dos personagens
+                  </h2>
+                  <p className="mt-4 max-w-2xl leading-7 text-zinc-400">
+                    Aqui vai entrar a estética visual de cada personagem.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setView("home")}
+                  className="rounded-2xl border border-zinc-700 bg-zinc-900/70 px-5 py-3 text-sm transition hover:border-red-700 hover:bg-zinc-800"
+                >
+                  Voltar
+                </button>
+              </div>
+
+              <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {["Paola", "Andressa", "Marta", "Vanessa", "Yasmin", "Igor"].map(
+                  (name) => (
+                    <div
+                      key={name}
+                      className="rounded-[1.8rem] border border-zinc-800 bg-black/40 p-7"
+                    >
+                      <div className="flex h-56 items-center justify-center rounded-[1.2rem] border border-zinc-800 bg-zinc-950 text-zinc-500">
+                        imagem / referência
+                      </div>
+
+                      <h3 className="mt-5 text-2xl font-semibold text-zinc-100">
+                        {name}
+                      </h3>
+
+                      <p className="mt-3 leading-7 text-zinc-400">
+                        Espaço reservado para a aparência visual e referência
+                        estética do personagem.
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          </section>
+        ) : (
           <>
             <section className="mx-auto max-w-6xl animate-fadeIn">
               <div className="rounded-[2rem] border border-red-950/70 bg-[radial-gradient(circle_at_top,rgba(120,0,0,0.24),transparent_40%),rgba(10,10,10,0.96)] px-8 py-16 shadow-2xl shadow-black/40">
