@@ -18,7 +18,7 @@ type Character = {
   main?: boolean;
 };
 
-const spriteImage = "/elenco.png";
+const spriteImage = "/elenco.png.png";
 const characters: Character[] = [
   {
     id: "paola",
